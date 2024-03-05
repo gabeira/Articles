@@ -22,19 +22,35 @@ fun Navigation(startDestination: String) {
             SavedScreen(navController)
         }
         composable(
-            route = Screen.DetailScreen.route + "/{article}",
+            route = Screen.DetailScreen.route +
+                    "/{${Arguments.SAVED_KEY}}/{${Arguments.TITLE_KEY}}/{${Arguments.ARTICLE_KEY}}",
             arguments = listOf(
-                navArgument("article") {
+                navArgument(Arguments.SAVED_KEY) {
+                    type = NavType.BoolType
+                    nullable = false
+                },
+                navArgument(Arguments.TITLE_KEY) {
                     type = NavType.StringType
-                    nullable = true
+                    nullable = false
+                },
+                navArgument(Arguments.ARTICLE_KEY) {
+                    type = NavType.StringType
+                    nullable = false
                 }
             )
         ) { entry ->
-            val argument = entry.arguments?.getString("article")
+            val alreadySaved = entry.arguments?.getBoolean(Arguments.SAVED_KEY, false) ?: false
+            val argument = entry.arguments?.getString(Arguments.ARTICLE_KEY)
             val article = Gson().fromJson(argument, Article::class.java)
-            ArticleDetailScreen(navController, article)
+            ArticleDetailScreen(navController, article, alreadySaved)
         }
     }
+}
+
+object Arguments {
+    const val TITLE_KEY = "title"
+    const val SAVED_KEY = "saved"
+    const val ARTICLE_KEY = "article"
 }
 
 sealed class Screen(val route: String) {

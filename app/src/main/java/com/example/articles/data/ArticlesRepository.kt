@@ -47,11 +47,7 @@ class ArticlesRepository @Inject constructor(
     // Observed Flow will notify the observer when the data has changed.
     val allArticlesFromDataBase: Flow<List<Article>> = articleDao.getAll()
 
-    suspend fun findByUrl(url: String, call: (Article?) -> Unit) {
-        articleDao.findByUrl(url).collect {
-            call(it)
-        }
-    }
+    fun isSaved(title: String) = articleDao.isSaved(title)
 
     // By default Room runs suspend queries off the main thread, therefore, we don't need to
     // implement anything else to ensure we're not doing long running database work

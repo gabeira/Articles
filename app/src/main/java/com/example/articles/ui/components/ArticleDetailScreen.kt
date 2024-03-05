@@ -10,13 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,12 +33,12 @@ import com.example.articles.ui.theme.ArticlesTheme
 @Composable
 fun ArticleDetailScreen(
     navController: NavHostController,
-    article: Article
+    article: Article,
+    alreadySaved: Boolean = false
 ) {
     val viewModel: HeadlinesViewModel = hiltViewModel()
-    viewModel.findArticleByUrl(article.url)
-    //TODO change this call for saved articles
-    val isSaved by viewModel.articleByUrlSaved.collectAsState()
+    val isSaved = if (alreadySaved) true else
+        viewModel.isSaved.collectAsState(initial = false).value
     Column(
         Modifier
             .fillMaxSize()
@@ -57,9 +54,9 @@ fun ArticleDetailScreen(
             }
             Spacer(modifier = Modifier.fillMaxWidth(.8f))
             Button(onClick = {
+                navController.popBackStack()
                 if (isSaved) viewModel.deleteArticle(article)
                 else viewModel.saveArticle(article)
-                navController.popBackStack()
             }) {
                 Icon(
                     painter = painterResource(

@@ -15,8 +15,8 @@ interface ArticleDao {
     @Query("SELECT * FROM article")
     fun getAll(): Flow<List<Article>>
 
-    @Query("SELECT * FROM article WHERE url = (:url)")
-    fun findByUrl(url: String): Flow<Article?>
+    @Query("SELECT EXISTS(SELECT 1 FROM article WHERE title = :title LIMIT 1)")
+    fun isSaved(title: String): Flow<Boolean>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(vararg headline: Article)
