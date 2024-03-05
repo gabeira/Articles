@@ -28,16 +28,13 @@ class ArticlesRepository @Inject constructor(
             sourcesDao.getAllSelectedSources().collect { savedSources ->
                 val sources = savedSources.joinToString(",") { it.id }
                 val language = "en"
-                val request = if (sources.isEmpty()) {
-                    service.requestAllArticlesResponse(language, apiKey)
-                } else {
-                    service.requestArticlesFromSourceResponse(sources, language, apiKey)
-                }
+                val request = service.requestArticlesFromSourceResponse(sources, language, apiKey)
+
                 if (request.isSuccessful) {
                     val complete = request.body()
                     complete?.let { onSuccess(it.articles) }
                 } else {
-                    onError("Could not load ${request.errorBody()}")
+                    onError("Could not load ${request.errorBody()?.string()}")
                 }
             }
         } catch (e: Exception) {

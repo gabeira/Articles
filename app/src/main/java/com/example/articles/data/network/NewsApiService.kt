@@ -8,12 +8,6 @@ import retrofit2.http.Query
 
 interface NewsApiService {
 
-    @GET("everything")
-    suspend fun requestAllArticlesResponse(
-        @Query("language") language: String,
-        @Query("apiKey") apiKey: String
-    ): Response<RequestArticles>
-
     @GET("top-headlines")
     suspend fun requestArticlesFromSourceResponse(
         @Query("sources") from: String,
